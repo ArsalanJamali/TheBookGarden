@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm,AuthenticationForm,UsernameField
 from django.utils.translation import ugettext_lazy as _
+from django.contrib.auth.forms import PasswordResetForm,SetPasswordForm
+
 
 class Register_User_Form(UserCreationForm):
 
@@ -35,7 +37,7 @@ class Register_User_Form(UserCreationForm):
 
 class LoginForm(AuthenticationForm):
     username=UsernameField(
-        label='Username',
+        label='Username or Email',
         widget=forms.TextInput(attrs={'class':'input100','placeholder':'Type your username'})
     )
     password=forms.CharField(
@@ -43,6 +45,33 @@ class LoginForm(AuthenticationForm):
 		strip=False,
 		widget=forms.PasswordInput(attrs={'class':'input100','placeholder':'Type your password'}),
     )
+
+    def clean(self):
+        self.cleaned_data['username']=self.cleaned_data['username'].lower()
+        return self.cleaned_data
+
+
+class CustomPasswordResetForm(PasswordResetForm):
+
+    def __init__(self,*args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['email'].label='Email'
+        self.fields['email'].widget.attrs={'class':'input100','placeholder':'Type your email'}
+
+    def clean_email(self):
+        return self.cleaned_data['email'].lower()    
+
+class CustomPasswordConfirmForm(SetPasswordForm):
+    
+    def __init__(self,*args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['new_password1'].label='New Password'
+        self.fields['new_password2'].label='Confirm Password'
+        self.fields['new_password1'].widget.attrs={'data-toggle':'popover','data-trigger':'focus','class':'input100','placeholder':'Type your password','data-placement':'top','data-container':'body'}
+        self.fields['new_password2'].widget.attrs={'class':'input100','placeholder':'Type your password'}
+    
+    
+   
 
 
  
