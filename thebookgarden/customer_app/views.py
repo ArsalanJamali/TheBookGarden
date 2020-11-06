@@ -92,7 +92,7 @@ class SignUpView(CreateView):
                 to=[form.cleaned_data['email']]
             )
 
-            mail_to_send.send(fail_silently=False)
+            mail_to_send.send(fail_silently=True)
             messages.success(request,_('Your Account is successfully created kindly verify your email inorder to activate your account'))
             return redirect('customer_app:register')
         else:
