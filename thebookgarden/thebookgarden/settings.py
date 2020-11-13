@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'customer_app.apps.CustomerAppConfig'
+    'customer_app.apps.CustomerAppConfig',
+    'product_app.apps.ProductAppConfig'
 ]
 
 MIDDLEWARE = [
@@ -137,7 +138,9 @@ EMAIL_HOST_USER='thebookgarden00@gmail.com'
 #EMAIL_USE_TLS=True
 #EMAIL_USE_SSL=False
 
-
+#for product images
+MEDIA_URL='/media/'
+MEDIA_ROOT=os.path.join(BASE_DIR,"media")
 
 # to change message tag
 MESSAGE_TAGS = {
