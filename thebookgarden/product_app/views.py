@@ -1,30 +1,39 @@
 from django.shortcuts import render
 from django.views.generic import ListView
 from . import models
-
+from django.http import Http404
 # Create your views here.
 
 class BookListView(ListView):
     template_name='shop.html'
     model=models.Book
-    context_name_data='booklist'   
+    context_object_name='booklist'   
  
+    def get_queryset(self):
+        if 'pk' in self.kwargs:
+            return self.model.objects.filter(book_category__id=self.kwargs.get('pk'))
+        else:
+            try:
+                pk_first=models.BookCategory.objects.all().first().pk
+                return self.model.objects.filter(book_category__id=pk_first)
+            except:
+                return None
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["categories"] = models.BookCategory.objects.all()
         
         if 'pk' in self.kwargs:
             try:
-                context['category_pk'] = context["categories"].filter(pk=self.kwargs.get('pk')).values('pk')[0]['pk']
+                context['category_pk'] = context["categories"].get(pk=self.kwargs.get('pk')).pk
             except:
-                context['category_pk']=0
+                raise Http404()
         else:
             try:    
                 context['category_pk'] = context["categories"].first().pk    
             except:
                 context['category_pk']=0
 
-        context['booklist']=models.Book.objects.filter(book_category__id=context['category_pk'])
         context['authors']=models.Author.objects.filter(book__book_category__id=context['category_pk']).distinct()  
         query_set=context['booklist'].order_by('book_price').values('book_price')
         try:

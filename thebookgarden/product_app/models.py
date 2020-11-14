@@ -39,6 +39,8 @@ class Book(models.Model):
 
     def get_book_list_image(self):
         obj=self.bookimage_set.filter(is_default=True).values('image').first()
+        if obj is None:
+        	return obj
         return '/media/'+obj['image']
 
 class BookImage(models.Model):
