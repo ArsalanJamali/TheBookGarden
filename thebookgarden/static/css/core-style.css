@@ -1395,6 +1395,106 @@ img {
     border-radius: 0;
     background-color: #f5f7fa; }
 
+
+    .product_description_area .tab-content .total_rate .box_total h4 {
+    color: #f5b002;
+    font-size: 48px;
+    font-weight: bold;
+    margin-left: 20px;
+}
+
+.product_description_area .nav.nav-tabs li a.active {
+    background: #f5b002;
+    color: #fff !important;
+    border-color: #FD8F5F;
+    margin-left: 20px;
+}
+
+.product_description_area .nav.nav-tabs li a {
+    padding: 0px;
+    border: none;
+    line-height: 38px;
+    background: #fff;
+    border: 1px solid #eeeeee;
+    border-radius: 0px;
+    padding: 0px 30px;
+    color: #f5b002;
+    font-size: 13px;
+    font-weight: normal;
+    border-radius: 50px;
+    margin-left: 20px;
+}
+.nav-tabs .nav-link {
+    border: 1px solid transparent;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+}
+
+.h1, .h2, .h3, .h4, .h5, .h6, h1, h2, h3, h4, h5, h6 {
+    margin-bottom: .5rem;
+    font-family: inherit;
+    font-weight: 500;
+    line-height: 1.2;
+    color: inherit;
+}
+
+button, input, optgroup, select, textarea {
+    margin: 0;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+*, *::after, *::before {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+*, ::after, ::before {
+    box-sizing: border-box;
+}
+user agent stylesheet
+input[type="text" i] {
+    padding: 1px 2px;
+}
+user agent stylesheet
+input {
+    -webkit-writing-mode: horizontal-tb !important;
+    text-rendering: auto;
+    color: -internal-light-dark(black, white);
+    letter-spacing: normal;
+    word-spacing: normal;
+    text-transform: none;
+    text-indent: 0px;
+    text-shadow: none;
+    display: inline-block;
+    text-align: start;
+    appearance: textfield;
+    background-color: -internal-light-dark(rgb(255, 255, 255), rgb(59, 59, 59));
+    -webkit-rtl-ordering: logical;
+    cursor: text;
+    margin: 0em;
+    font: 400 13.3333px Arial;
+    padding: 1px 2px;
+    border-width: 2px;
+    border-style: inset;
+    border-color: -internal-light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
+    border-image: initial;
+}
+.product_description_area .tab-content .total_rate .rating_list h3 {
+    font-size: 18px;
+    color: #f5b002;
+    font-family: "Poppins",sans-serif;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.star-rating {
+  line-height:32px;
+  font-size:1.25em;
+}
+
+.star-rating .fa-star{color: yellow;}
+
 /* ##### The End ##### */
 
 /*# sourceMappingURL=core-style.css.map */

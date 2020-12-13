@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.views.generic import ListView
+from django.views.generic import ListView,DetailView
 from . import models
 from django.http import Http404
 # Create your views here.
@@ -44,6 +44,20 @@ class BookListView(ListView):
             context['max_price']=0
         return context
 
+class SingleBookView(DetailView):
+    template_name='product-details.html'
+    model=models.Book
+    context_object_name='book'
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        book_pk=self.kwargs.get('pk')
+        book_images=self.model.objects.get(pk=book_pk).bookimage_set.filter(is_default=True)
+        if book_images.count()>4:
+            book_images=book_images[:4]
+        context["book_images"] =book_images 
+        return context
+    
 
 
     

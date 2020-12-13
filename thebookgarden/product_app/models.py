@@ -43,6 +43,19 @@ class Book(models.Model):
         	return obj
         return '/media/'+obj['image']
 
+    def get_book_name_for_url(self):
+        temp_book_name=self.book_name
+        return temp_book_name.replace(' ','-')
+
+    def shrink_book_description(self):
+        desc=self.description
+        if(len(desc)>150):
+            desc=desc[:150]
+            return (desc.rsplit(' ',1)[0])+'....'
+        return desc     
+        
+
+
 class BookImage(models.Model):
     image_of_book=models.ForeignKey(Book,verbose_name=("Image Belongs to?"),on_delete=models.CASCADE)
     image=models.ImageField(upload_to=get_image_file_name,blank=False)
