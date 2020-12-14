@@ -8,10 +8,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-
-    <!-- Title  -->
-    <title>The Book Garden | Home</title>
-
+    
     <!-- Favicon  -->
     <link rel="icon" href="{% static 'images/icons/header-icon.ico' %}">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
@@ -84,8 +81,8 @@
                     <li><a href="{% url 'product_app:product_list' %}">Shop</a></li>
                     <li><a href="#">Cart</a></li>
                     <li><a href="#">Checkout</a></li>
-                    <li><a href="#">About Us</a></li>
-                    <li><a href="#">Contact Us</a></li>
+                    <li><a href="{% url 'about-us' %}">About Us</a></li>
+                    <li><a href="{% url 'contact-us' %}">Contact Us</a></li>
                 </ul>
             </nav>
             <!-- Button Group -->
