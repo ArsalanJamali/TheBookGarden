@@ -1,8 +1,10 @@
 from django.shortcuts import render,redirect
-from django.views.generic import CreateView
+from django.views.generic import CreateView,UpdateView,TemplateView,ListView,DeleteView
 from django.contrib.auth.views import LoginView
 from django.contrib.auth import get_user_model
-from .forms import Register_User_Form,LoginForm,CustomPasswordResetForm,CustomPasswordConfirmForm
+from .forms import (Register_User_Form,LoginForm,CustomPasswordResetForm,CustomPasswordConfirmForm,UserUpdateForm,UserPasswordUpdateForm,
+                    AddressBookCreateForm)
+from .models import AddressBook                        
 from django.urls import reverse_lazy
 from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
@@ -18,6 +20,9 @@ from django.conf import settings
 from django.db.models import Q
 from django.core.exceptions import ValidationError
 from django.contrib.auth.views import PasswordResetView,PasswordResetConfirmView
+from django.contrib.messages.views import SuccessMessageMixin
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import PasswordChangeView
 
 def ActivateUserAccountView(request,uid64,token):
     try:
@@ -148,4 +153,63 @@ class PasswordConfirmClassView(PasswordResetConfirmView):
     success_url=reverse_lazy('customer_app:password_reset_confirm_done')
     form_class=CustomPasswordConfirmForm
 
+
+class UserUpdateView(SuccessMessageMixin,LoginRequiredMixin,UpdateView):
+    template_name='Customer_section/editaccount.html'
+    form_class=UserUpdateForm
+    success_url=reverse_lazy('customer_app:my_account_pinfo')
+    success_message='Personal Info updated successfully..'
+    model=get_user_model()
+
+    def get_object(self):
+        return self.request.user
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['current_user']=self.request.user
+        return kwargs    
+
+class UserOldPasswordUpdateView(SuccessMessageMixin,LoginRequiredMixin,PasswordChangeView):
+    template_name='Customer_section/editpassword.html'
+    form_class=UserPasswordUpdateForm
+    success_url=reverse_lazy('customer_app:my_account_password')
+    success_message='Password Updated..'
+
+
+class AddressBookCreateView(LoginRequiredMixin,CreateView):
+    template_name='Customer_section/addressdisplayform.html'
+    model=AddressBook
+    success_url=reverse_lazy('customer_app:address_book_list')
+    form_class=AddressBookCreateForm
+
+    def form_valid(self,form):
+        self.object=form.save(commit=False)
+        self.object.user=self.request.user
+        self.object.save()
+        return super().form_valid(form)
+
+class AddressBookListView(LoginRequiredMixin,ListView):
+    model=AddressBook
+    template_name='Customer_section/addressbooklist.html'
+    context_object_name='all_address'
+
+    def get_queryset(self):
+        return self.model.objects.filter(user=self.request.user).order_by('-is_default','-pk')
+
+class AddressBookUpdateView(LoginRequiredMixin,UpdateView):
+    model=AddressBook
+    template_name='Customer_section/addressbookupdate.html'
+    success_url=reverse_lazy('customer_app:address_book_list')
+    form_class=AddressBookCreateForm
+
+class AddressBookDeleteView(LoginRequiredMixin,DeleteView):
+    model=AddressBook
+    success_url=reverse_lazy('customer_app:address_book_list')
+    
+
+
+
+    
+
+    
 
