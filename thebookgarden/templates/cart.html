@@ -75,15 +75,9 @@
                                 <li><span>GST 13%:</span> <span id="tax">{{ tax }}</span></li>
                                 <li><span>total:</span> <span id="total">{{ total }}</span></li>
                             </ul>
-                            {% if not is_empty %}
                             <div class="cart-btn mt-100">
-                                <a href="cart.html" id="checkout-btn" class="btn amado-btn w-100">Checkout</a>
+                                <a href="{% url 'order_app:checkout-order' %}" id="checkout-btn" class="btn amado-btn w-100">Checkout</a>
                             </div>
-                            {% else %}
-                            <div class="cart-btn mt-100">
-                            <a href="#" id="checkout-btn-disabled" class="btn amado-btn w-100" title="Cart Empty" data-toggle="popover" data-trigger="hover" data-content="Cart is empty kindly fill it up..">Checkout</a>
-                            </div>
-                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -94,10 +88,6 @@
 {% endblock %}
 {% block js %}
  <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-<script>
-$(document).ready(function(){
-  $('#checkout-btn-disabled').popover();   
-});
-</script>
+
 <script src="{% static  'js/addtocart.js'  %}"></script>
 {% endblock %}  

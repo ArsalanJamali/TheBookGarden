@@ -7,6 +7,7 @@ from django.conf import settings
 import json
 from product_app.models import Book
 from .utils import get_new_cart_items_subtotal
+from django.http import Http404
 
 
 class HomePage(TemplateView):
@@ -39,7 +40,7 @@ class AboutUsView(TemplateView):
 
 def CartDisplayView(request):
     if request.method=='POST':
-        pass
+        raise Http404()
     else:
         context={}
         cart=None

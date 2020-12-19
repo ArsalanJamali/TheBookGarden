@@ -80,7 +80,7 @@
                     <li class="active"><a href="{% url 'index' %}">Home</a></li>
                     <li><a href="{% url 'product_app:product_list' %}">Shop</a></li>
                     <li><a href="{% url 'cart-display' %}">Cart</a></li>
-                    <li><a href="#">Checkout</a></li>
+                    <li><a href="{% url 'order_app:checkout-order' %}">Checkout</a></li>
                     <li><a href="{% url 'about-us' %}">About Us</a></li>
                     <li><a href="{% url 'contact-us' %}">Contact Us</a></li>
                 </ul>
@@ -237,9 +237,10 @@
             </div>
         </div>
         <!-- Product Catagories Area End -->
+    {% endblock %}
     </div>
     <!-- ##### Main Content Wrapper End ##### -->
-    {% endblock %}
+    
 
     {% block footer %}
     <!-- ##### Newsletter Area Start ##### -->

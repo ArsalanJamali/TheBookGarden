@@ -27,7 +27,8 @@ urlpatterns = [
     path('',include('customer_app.urls')),
     path('contact-us/',ContactUsView,name='contact-us'),
     path('about-us/',AboutUsView.as_view(),name='about-us'),
-    path('cart/',CartDisplayView,name='cart-display')
+    path('cart/',CartDisplayView,name='cart-display'),
+    path('order/',include('book_orders.urls'))
 ]
 
 urlpatterns=urlpatterns+static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
