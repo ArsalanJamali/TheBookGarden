@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.views.generic import TemplateView
 from customer_app.models import AddressBook
 import json
@@ -9,7 +9,12 @@ from django.http import Http404
 from .models import Order,OrderItem
 from django.contrib.auth import get_user_model
 from product_app.models import Book
-
+from django.utils import timezone
+from django.views.generic import ListView,DetailView
+from .models import Order
+from django.core import mail
+from django.template.loader import render_to_string
+from django.conf import settings
 # Create your views here.
 
 def create_order_item_instances(cart,order_obj):
@@ -25,7 +30,33 @@ def create_order_item_instances(cart,order_obj):
             orderitem_obj=OrderItem(order=order_obj,book=book_obj,quantity=qty,short_book_info=None)
             orderitem_obj.save()
 
+def create_context_dictionary(order_obj):
+    all_item_in_order=[]
+    subtotal=0
+    context={}
+    for item in order_obj.orderitem_set.all():
+        temp_dict={}
+        qty=item.quantity
+        price=0
+        if item.book !=None:
+            price=item.book.book_price
+            temp_dict['book_name']=item.book.book_name
+        elif item.short_book_info !=None:
+            price=item.short_book_info.book_price
+            temp_dict['book_name']=item.short_book_info.book_name
 
+        temp_dict['price']=price
+        temp_dict['quantity']=qty
+        temp_dict['total']=price*qty
+        all_item_in_order.append(temp_dict)
+        subtotal+=(qty*price)
+
+    context['subtotal']=subtotal
+    context['tax']=round(subtotal*0.13,2)
+    context['gross_total']=round(context['tax']+subtotal,2)
+    context['all_item_in_order']=all_item_in_order
+    context['order']=order_obj
+    return context
 
 
 def CheckoutOrderView(request):
@@ -87,12 +118,45 @@ def CheckoutOrderView(request):
                             billing_address=billing_address,billing_phone_number=bphone,
                             shipping_first_name=sfname,shipping_last_name=slname,shipping_email=semail,
                             shipping_address=shipping_address,shipping_phone_number=sphone,
-                            customer=user,order_status=1,payment_status=0,order_guideline=comment
+                            customer=user,order_status=1,payment_status=0,order_guideline=comment,order_created_date=timezone.now()
                             )
             order_obj.save()
             create_order_item_instances(json.loads(cart),order_obj)
-            response=render(request,'index.html')
+            
+            connection=mail.get_connection()  #for opening the connection
+            
+            if bemail =='' and request.user.is_authenticated:
+                bemail=request.user.email
+
+            mail_subject_customer='Order Details| The Book Garden'
+            mail_subject_admin='You Got A New Order'
+
+            context=create_context_dictionary(order_obj)
+
+            mail_message=render_to_string('orderinvoice.html',context)
+            all_messages=list()
+            
+            if bemail!='':
+                mail_to_send=mail.EmailMessage(
+                    mail_subject_customer,
+                    mail_message,
+                    to=[bemail]
+                )
+                mail_to_send.content_subtype = 'html'
+                all_messages.append(mail_to_send)
+            
+            mail_to_send=mail.EmailMessage(
+                mail_subject_admin,
+                mail_message,
+                to=[settings.EMAIL_HOST_USER]
+            )
+            mail_to_send.content_subtype = 'html'
+            all_messages.append(mail_to_send)
+
+            connection.send_messages(all_messages)
+            response=redirect('order_app:checkout-order')
             response.delete_cookie('cart')
+            response.set_cookie('order_set_true',1)
             return response                    
     else:
         context={}
@@ -122,15 +186,87 @@ def CheckoutOrderView(request):
             context['total']=round(context['subtotal']+context['tax'],2)
         return render(request,'checkout.html',context)
             
-
-
+            
 def getAddressObject(request):
     if request.is_ajax():
         address_pk=int(request.GET.get('id'))
         returned_dic= serializers.serialize('json',AddressBook.objects.filter(pk=address_pk))
         return JsonResponse(returned_dic,status=200,safe=False)
 
+class OrderListView(ListView):
+    template_name='orderlist.html'
+    model=Order
+    context_object_name='all_orders'
 
+
+    def get_queryset(self):
+        return self.model.objects.filter(customer=self.request.user).order_by('-pk')
+    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        total=0
+        tax=0
+        subtotal=0
+        total_list=[]
+        if context['all_orders'].count()==0:
+            context['is_empty']=True
+
+        for order in context['all_orders']:
+            for item in order.orderitem_set.all():
+                qty=item.quantity
+                price=0
+                if item.book !=None:
+                    price=item.book.book_price
+                elif item.short_book_info !=None:
+                    price=item.short_book_info.book_price
+                subtotal+=(qty*price)
+            tax=round(subtotal*0.13,2)
+            total=round(tax+subtotal,2)
+            total_list.append(total)
+            total=tax=subtotal=0
+
+        context['all_orders']=zip(context['all_orders'],total_list)
+        return context
+    
+class OrderDetailView(DetailView):
+    template_name='orderdetail.html'
+    model=Order
+    context_object_name='order'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        all_item_in_order=[]
+        subtotal=0
+        obj=None
+        try:
+            obj=Order.objects.get(pk=self.kwargs.get('pk'))
+        except:
+            raise Http404()
+
+        for item in obj.orderitem_set.all():
+            temp_dict={}
+            qty=item.quantity
+            price=0
+            if item.book !=None:
+                price=item.book.book_price
+                temp_dict['book_name']=item.book.book_name
+            elif item.short_book_info !=None:
+                price=item.short_book_info.book_price
+                temp_dict['book_name']=item.short_book_info.book_name
+
+            temp_dict['price']=price
+            temp_dict['quantity']=qty
+            temp_dict['total']=price*qty
+            all_item_in_order.append(temp_dict)
+            subtotal+=(qty*price)
+
+        context['subtotal']=subtotal
+        context['tax']=round(subtotal*0.13,2)
+        context['gross_total']=round(context['tax']+subtotal,2)
+        context['all_item_in_order']=all_item_in_order
+        return context
+    
 
 
 

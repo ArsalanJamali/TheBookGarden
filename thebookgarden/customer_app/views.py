@@ -115,11 +115,17 @@ class SignInView(LoginView):
         if form.is_valid():
             user=authenticate(request,username=form.cleaned_data['username'],password=form.cleaned_data['password'])
             if user is not None:
+                last_login=user.last_login
                 login(request,user)
+                return_to=None
                 try:
-                    return redirect(self.request.GET.get('next'))
+                    return_to=redirect(self.request.GET.get('next'))
                 except:    
-                    return redirect(settings.LOGIN_REDIRECT_URL)
+                    return_to=redirect(settings.LOGIN_REDIRECT_URL)
+                    if last_login == None:
+                        return redirect('customer_app:my_account_pinfo')
+                    else:
+                        return return_to    
             else:
                 try:
                     user=get_user_model().objects.get(

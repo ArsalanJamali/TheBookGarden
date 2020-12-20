@@ -3,6 +3,7 @@ from django.contrib.auth import get_user_model
 from product_app.models import Book
 from django.dispatch import receiver
 from django.db.models.signals import pre_delete
+from django.utils import timezone
     
 
 User=get_user_model()
@@ -48,7 +49,10 @@ class Order(models.Model):
     #Payment Status
     payment_status=models.IntegerField(choices=PAYMENT_STATUS_CHOICES,default=0)
     #Order Guideline
-    order_guideline=models.TextField()
+    order_guideline=models.TextField(blank=True)
+    #Date time of order
+    order_created_date=models.DateTimeField(blank=False,null=False,default=timezone.now)
+
 
     def __str__(self):
         return str(self.pk)

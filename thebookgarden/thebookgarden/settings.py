@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'customer_app.apps.CustomerAppConfig',
     'product_app.apps.ProductAppConfig',
-    'book_orders.apps.BookOrdersConfig'
+    'book_orders.apps.BookOrdersConfig',
 ]
 
 MIDDLEWARE = [
@@ -131,13 +131,14 @@ STATICFILES_DIRS=[
 ]
 
 #For Sending Emails
-EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend'
-#EMAIL_HOST='smtp.gmail.com'
+#EMAIL_BACKEND='django.core.mail.backends.console.EmailBackend' #for console mail
+EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST='smtp.gmail.com'
 EMAIL_HOST_USER='thebookgarden00@gmail.com'
-#EMAIL_HOST_PASSWORD='200786Arsalanabc'
-#EMAIL_PORT=587
-#EMAIL_USE_TLS=True
-#EMAIL_USE_SSL=False
+EMAIL_HOST_PASSWORD='200786Arsalanabc'
+EMAIL_PORT=587
+EMAIL_USE_TLS=True
+EMAIL_USE_SSL=False
 
 #for product images
 MEDIA_URL='/media/'

@@ -81,7 +81,7 @@
                     <li><a href="{% url 'customer_app:my_account_pinfo' %}">Edit Account</a></li>
                     <li><a href="{% url 'customer_app:my_account_password' %}">Edit Password</a></li>
                     <li><a href="{% url 'customer_app:address_book_list' %}">Address Book</a></li>
-                    <li><a href="{% url 'about-us' %}">Order List</a></li>
+                    <li><a href="{% url 'order_app:order_list' %}">Order List</a></li>
                 </ul>
             </nav>
             <!-- Cart Menu -->
@@ -198,6 +198,37 @@
     <script src="{% static 'js/active.js' %}"></script>
     {% block js %}
     {% endblock %}
+
+    <script>
+    function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+    }
+        $(document).ready(function(e){
+            if(getCookie('cart')!=null||getCookie('cart')!=undefined)
+            {
+                var cart=JSON.parse(getCookie('cart'));
+                var size = 0, key;
+                for (key in cart) 
+                {
+                if (cart.hasOwnProperty(key)) 
+                size++;
+                }
+                $('#navbar-cartcount').find("span").html('('+size+')');
+            }
+        });
+    </script>
 
 </body>
 
