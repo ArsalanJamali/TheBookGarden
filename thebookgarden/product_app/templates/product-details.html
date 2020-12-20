@@ -1,6 +1,7 @@
 {% extends 'index.html' %}
 {% load static %}
 
+
 {% block links %}
     <!-- Title  -->
     <title>The Book Garden| Product Detail</title>
@@ -15,8 +16,18 @@ html {
 {% endblock %}
 
 {% block body_block %}
+{% load app_filters %}
         <!-- Product Details Area Start -->
         <div class="single-product-area section-padding-100 clearfix">
+               {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div> 
+        {% endfor %}
+
             <div class="container-fluid">
 
                 <div class="row">
@@ -77,11 +88,12 @@ html {
                                 <!-- Ratings & Review -->
                                 <div class="ratings-review mb-15 d-flex align-items-center justify-content-between">
                                     <div class="ratings">
-                                        <i class="fa fa-star" aria-hidden="true"></i>
-                                        <i class="fa fa-star" aria-hidden="true"></i>
-                                        <i class="fa fa-star" aria-hidden="true"></i>
-                                        <i class="fa fa-star" aria-hidden="true"></i>
-                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                        {% with average_int as rating %}
+                                        {% for i in 1|range:rating %}
+                                      <i class="fa fa-star" aria-hidden="true"></i>
+                                      {% endfor %}                 
+                                      {% endwith %}
+                                        
                                     </div>
                                     <div class="review">
                                         <a href="#myTab">Write A Review</a>
@@ -117,7 +129,7 @@ html {
                                 {% if book.in_stock %}
                                 <button type="submit" name="addtocart" class="btn amado-btn">Add to cart</button>
                                 {% else %}
-                                <a id="AddtoCartbtn"  title="Out of stock" name="addtocart"  class="btn amado-btn" data-toggle="popover" data-trigger="hover" data-content="Product is out of stock will be available soon." href="#">Add to cart</a>
+                                <a id="AddtoCartbtn" name="addtocart"  class="btn amado-btn"  title="Out of stock" data-toggle="popover" data-trigger="hover" data-content="Product is out of stock will be available soon." href="#">Add to cart</a>
                                 {% endif %}
                             </form>
 
@@ -150,103 +162,6 @@ html {
                 {{ book.description }}
               </p>
             </div>
-            
-            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-              <div class="row">
-                <div class="col-lg-6">
-                  <div class="comment_list">
-                    <div class="review_item">
-                      <div class="media">
-                        <div class="d-flex">
-                          <img src="{% static 'assets/img/gallery/review-1.png' %}" alt="" />
-                        </div>
-                        <div class="media-body">
-                          <h4>Blake Ruiz</h4>
-                          <h5>12th Feb, 2017 at 05:56 pm</h5>
-                          <a class="reply_btn" href="#">Reply</a>
-                        </div>
-                      </div>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore magna
-                        aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                        ullamco laboris nisi ut aliquip ex ea commodo
-                      </p>
-                    </div>
-                    <div class="review_item reply">
-                      <div class="media">
-                        <div class="d-flex">
-                          <img src="{% static 'assets/img/gallery/review-2.png' %}" alt="" />
-                        </div>
-                        <div class="media-body">
-                          <h4>Blake Ruiz</h4>
-                          <h5>12th Feb, 2017 at 05:56 pm</h5>
-                          <a class="reply_btn" href="#">Reply</a>
-                        </div>
-                      </div>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore magna
-                        aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                        ullamco laboris nisi ut aliquip ex ea commodo
-                      </p>
-                    </div>
-                    <div class="review_item">
-                      <div class="media">
-                        <div class="d-flex">
-                          <img src="{% static 'assets/img/gallery/review-3.png' %}" alt="" />
-                        </div>
-                        <div class="media-body">
-                          <h4>Blake Ruiz</h4>
-                          <h5>12th Feb, 2017 at 05:56 pm</h5>
-                          <a class="reply_btn" href="#">Reply</a>
-                        </div>
-                      </div>
-                      <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore magna
-                        aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                        ullamco laboris nisi ut aliquip ex ea commodo
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div class="col-lg-6">
-                  <div class="review_box">
-                    <h4>Post a comment</h4>
-                    <form class="row contact_form" action="contact_process.php" method="post" id="contactForm"
-                    novalidate="novalidate">
-                    <div class="col-md-12">
-                      <div class="form-group">
-                        <input type="text" class="form-control" id="name" name="name" placeholder="Your Full name" />
-                      </div>
-                    </div>
-                    <div class="col-md-12">
-                      <div class="form-group">
-                        <input type="email" class="form-control" id="email" name="email" placeholder="Email Address" />
-                      </div>
-                    </div>
-                    <div class="col-md-12">
-                      <div class="form-group">
-                        <input type="text" class="form-control" id="number" name="number" placeholder="Phone Number" />
-                      </div>
-                    </div>
-                    <div class="col-md-12">
-                      <div class="form-group">
-                        <textarea class="form-control" name="message" id="message" rows="1"
-                        placeholder="Message"></textarea>
-                      </div>
-                    </div>
-                    <div class="col-md-12 text-right">
-                      <button type="submit" value="submit" class="btn">
-                        Submit Now
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            </div>
-          </div>
           <div class="tab-pane fade show active" id="review" role="tabpanel" aria-labelledby="review-tab">
             <div class="row">
               <div class="col-lg-6">
@@ -254,13 +169,13 @@ html {
                   <div class="col-6">
                     <div class="box_total">
                       <h5>Overall</h5>
-                      <h4>4.0</h4>
-                      <h6>(03 Reviews)</h6>
+                      <h4>{{ average }}</h4>
+                      <h6>({{ count }} Reviews)</h6>
                     </div>
                   </div>
                   <div class="col-6">
                     <div class="rating_list">
-                      <h3>Based on 3 Reviews</h3>
+                      <h3>Based on {{ count }} Reviews</h3>
                       <ul class="list">
                         <li>
                           <a href="#">5 Star
@@ -268,7 +183,7 @@ html {
                             <i class="fa fa-star"></i>
                             <i class="fa fa-star"></i>
                             <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i> 01</a>
+                            <i class="fa fa-star"></i> {{ 5stars }}</a>
                           </li>
                           <li>
                             <a href="#">4 Star
@@ -276,7 +191,7 @@ html {
                               <i class="fa fa-star"></i>
                               <i class="fa fa-star"></i>
                               <i class="fa fa-star"></i>
-                              <i class="fa fa-star"></i> 01</a>
+                              <i class="fa fa-star"></i> {{ 4stars }}</a>
                             </li>
                             <li>
                               <a href="#">3 Star
@@ -284,7 +199,7 @@ html {
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i>
-                                <i class="fa fa-star"></i> 01</a>
+                                <i class="fa fa-star"></i> {{ 3stars }}</a>
                               </li>
                               <li>
                                 <a href="#">2 Star
@@ -292,7 +207,7 @@ html {
                                   <i class="fa fa-star"></i>
                                   <i class="fa fa-star"></i>
                                   <i class="fa fa-star"></i>
-                                  <i class="fa fa-star"></i> 01</a>
+                                  <i class="fa fa-star"></i> {{ 2stars }}</a>
                                 </li>
                                 <li>
                                   <a href="#">1 Star
@@ -300,84 +215,46 @@ html {
                                     <i class="fa fa-star"></i>
                                     <i class="fa fa-star"></i>
                                     <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i> 01</a>
+                                    <i class="fa fa-star"></i> {{ 1stars }}</a>
                                   </li>
                                 </ul>
                               </div>
                             </div>
                           </div>
+                          <br>
+                          {% if not is_review_empty %}
                           <div class="review_list">
+                            {% for review in all_reviews %}
                             <div class="review_item">
                               <div class="media">
-                                <div class="d-flex">
-                                  <img src="{% static 'assets/img/gallery/review-1.png' %}" alt="" />
-                                </div>
                                 <div class="media-body">
-                                  <h4>Blake Ruiz</h4>
+                                  <h4>{{ review.full_name }}</h4>
+                                  {% with review.star_rating as rating %}
+                                  {% for i in 1|range:rating %}
                                   <i class="fa fa-star"></i>
-                                  <i class="fa fa-star"></i>
-                                  <i class="fa fa-star"></i>
-                                  <i class="fa fa-star"></i>
-                                  <i class="fa fa-star"></i>
+                                  {% endfor %}                 
+                                  {% endwith %}               
                                 </div>
                               </div>
                               <p>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                                sed do eiusmod tempor incididunt ut labore et dolore magna
-                                aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                                ullamco laboris nisi ut aliquip ex ea commodo
+                                {{ review.review }}
                               </p>
                             </div>
-                            <div class="review_item">
-                              <div class="media">
-                                <div class="d-flex">
-                                  <img src="{% static 'assets/img/gallery/review-2.png' %}" alt="" />
-                                </div>
-                                <div class="media-body">
-                                  <h4>Blake Ruiz</h4>
-                                  <i class="fa fa-star"></i>
-                                  <i class="fa fa-star"></i>
-                                  <i class="fa fa-star"></i>
-                                  <i class="fa fa-star"></i>
-                                  <i class="fa fa-star"></i>
-                                </div>
-                              </div>
-                              <p>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                                sed do eiusmod tempor incididunt ut labore et dolore magna
-                                aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                                ullamco laboris nisi ut aliquip ex ea commodo
-                              </p>
-                            </div>
-                            <div class="review_item">
-                              <div class="media">
-                                <div class="d-flex">
-                                  <img src="{% static 'assets/img/gallery/review-3.png' %}" alt="" />
-                                </div>
-                                <div class="media-body">
-                                  <h4>Blake Ruiz</h4>
-                                  <i class="fa fa-star"></i>
-                                  <i class="fa fa-star"></i>
-                                  <i class="fa fa-star"></i>
-                                  <i class="fa fa-star"></i>
-                                  <i class="fa fa-star"></i>
-                                </div>
-                              </div>
-                              <p>
-                                Lorem ipsum dolor sit amet, consectetur adipisicing elit,
-                                sed do eiusmod tempor incididunt ut labore et dolore magna
-                                aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                                ullamco laboris nisi ut aliquip ex ea commodo
-                              </p>
-                            </div>
+                            {% endfor %}
                           </div>
+                          {% else %}
+                          <p><b><i>Product haven't been reviewd..</i></b></p>
+                          {% endif %}
+
                         </div>
                         <div class="col-lg-6">
                           <div class="review_box">
                             <h4>Add a Review</h4>
                             <p>Your Rating:</p>
                             <div class="container">
-                            <div class="row">
+                            <form class="row contact_form" method="post" novalidate="novalidate">
+                            {% csrf_token %}
+                            <div class="row" style="margin-left:2px; margin-bottom:1px;">
                             <div class="col-lg-12">
                               <div class="star-rating">
                                 <span class="fa fa-star-o" data-rating="1"></span>
@@ -385,37 +262,33 @@ html {
                                 <span class="fa fa-star-o" data-rating="3"></span>
                                 <span class="fa fa-star-o" data-rating="4"></span>
                                 <span class="fa fa-star-o" data-rating="5"></span>
-                                <input type="hidden" name="whatever1" class="rating-value" value="2.56">
+                                <input type="hidden" name="whatever1" class="rating-value" value="2">
                               </div>
                             </div>
                             </div>
-                            <br>
-                            <form class="row contact_form" action="contact_process.php" method="post" novalidate="novalidate">
+                            {% if not user.is_authenticated %}
                               <div class="col-md-12">
                                 <div class="form-group">
-                                  <input type="text" class="form-control" name="name" placeholder="Your Full name" />
+                                  <input type="text" class="form-control" name="name" placeholder="Your Full name" required >
                                 </div>
                               </div>
+                              
                               <div class="col-md-12">
                                 <div class="form-group">
-                                  <input type="email" class="form-control" name="email" placeholder="Email Address" />
+                                  <input type="email" class="form-control" name="email" placeholder="Email Address" required >
                                 </div>
                               </div>
+                            {% endif %}
                               <div class="col-md-12">
                                 <div class="form-group">
-                                  <input type="text" class="form-control" name="number" placeholder="Phone Number" />
+                                  <textarea class="form-control" name="message" rows="5" placeholder="Review" required ></textarea>
                                 </div>
                               </div>
-                              <div class="col-md-12">
-                                <div class="form-group">
-                                  <textarea class="form-control" name="message" rows="1" placeholder="Review"></textarea>
-                                </div>
-                              </div>
-                              <div class="col-md-12 text-right">
-                                <button type="submit" value="submit" class="btn" style="background-color: #f5b002; color: white;">
+                               <div class="col-md-12 text-right" style="margin-bottom:5px;">
+                                <button type="submit" value="submit" class="btn amado-btn" >
                                   Submit Now
                                 </button>
-                              </div>
+                              </div>  
                             </form>
                           </div>
                         </div>
@@ -455,7 +328,8 @@ html {
     </script>
     <script>
 $(document).ready(function(){
-  $('#AddtoCartbtn').popover();   
+  $('#AddtoCartbtn').popover();  
+   
 });
 </script>
 <script src="{% static  'js/addtocart.js'  %}"></script>

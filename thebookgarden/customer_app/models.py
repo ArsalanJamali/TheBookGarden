@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
+from django.core.validators import MinValueValidator,MaxValueValidator
+from product_app.models import Book
 
 UserModel=get_user_model()
 # Create your models here.
@@ -22,6 +24,16 @@ class AddressBook(models.Model):
         else:
             complete_address=complete_address+self.zip_code+','+self.country
         return complete_address
-    
+
+class ReviewBook(models.Model):
+    book=models.ForeignKey(Book,on_delete=models.CASCADE)
+    star_rating=models.PositiveIntegerField(validators=[MinValueValidator(0),MaxValueValidator(5)],blank=False)
+    full_name=models.CharField(max_length=74,blank=False)
+    email=models.EmailField(max_length=254,blank=False)
+    review=models.TextField(blank=False)
+
+
+    def __str__(self):
+        return self.full_name
         
         

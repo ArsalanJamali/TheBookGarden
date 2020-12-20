@@ -7,6 +7,7 @@
 {% endblock %}
 
 {% block body_block %}
+{% load app_filters %}
 
         <div class="shop_sidebar_area">
 
@@ -129,11 +130,11 @@
                                 <!-- Ratings & Cart -->
                                 <div class="ratings-cart text-right">
                                     <div class="ratings">
+                                    {% with book.reviewbook_set.all as reviews_obj %}
+                                    {% for i in reviews_obj|starrange %}
                                         <i class="fa fa-star" aria-hidden="true"></i>
-                                        <i class="fa fa-star" aria-hidden="true"></i>
-                                        <i class="fa fa-star" aria-hidden="true"></i>
-                                        <i class="fa fa-star" aria-hidden="true"></i>
-                                        <i class="fa fa-star" aria-hidden="true"></i>
+                                    {% endfor %}
+                                    {% endwith %}
                                     </div>
                                     {% if book.in_stock %}
                                     <div class="cart">
