@@ -82,7 +82,7 @@ html {
                             <div class="product-meta-data">
                                 <div class="line"></div>
                                 <p class="product-price">Rs {{ book.book_price }}</p>
-                                <a href="product-details.html">
+                                <a href="{% url 'product_app:single_book' pk=book.pk bookname=book.get_book_name_for_url %}">
                                     <h6>{{ book.book_name }}</h6>
                                 </a>
                                 <!-- Ratings & Review -->

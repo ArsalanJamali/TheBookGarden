@@ -11,15 +11,27 @@ import math
 class BookListView(ListView):
     template_name='shop.html'
     model=models.Book
-    context_object_name='booklist'   
+    context_object_name='booklist'  
+    paginate_by=6
  
     def get_queryset(self):
+        all_authors=None
+        if 'all_authors' in self.request.GET:
+            all_authors=self.request.GET.getlist('all_authors')
+
         if 'pk' in self.kwargs:
-            return self.model.objects.filter(book_category__id=self.kwargs.get('pk'))
+            if all_authors!=None:
+                return self.model.objects.filter(book_category__id=self.kwargs.get('pk'),book_author__in=all_authors).order_by('-pk')
+            else:    
+                return self.model.objects.filter(book_category__id=self.kwargs.get('pk')).order_by('-pk')
         else:
             try:
                 pk_first=models.BookCategory.objects.all().first().pk
-                return self.model.objects.filter(book_category__id=pk_first)
+                if all_authors==None:
+                    return self.model.objects.filter(book_category__id=pk_first).order_by('-pk')
+                else:
+                    return self.model.objects.filter(book_category__id=pk_first,book_author__in=all_authors).order_by('-pk')
+
             except:
                 return None
 
@@ -39,13 +51,24 @@ class BookListView(ListView):
                 context['category_pk']=0
 
         context['authors']=models.Author.objects.filter(book__book_category__id=context['category_pk']).distinct()  
-        query_set=context['booklist'].order_by('book_price').values('book_price')
-        try:
-            context['min_price']=query_set.first()['book_price']
-            context['max_price']=query_set.last()['book_price']
-        except:
-            context['min_price']=0
-            context['max_price']=0
+
+        context['min_price']=0
+        context['max_price']=0
+        flag=None
+        
+        for item in context['booklist']:
+            if flag==None:
+                context['min_price']=item.book_price
+                context['max_price']=item.book_price
+                flag=1
+                
+            if context['min_price']>item.book_price:
+                context['min_price']=item.book_price
+            
+            if context['max_price']<item.book_price:
+                context['max_price']=item.book_price
+
+        
         return context
 
 class SingleBookView(DetailView):
@@ -87,7 +110,7 @@ class SingleBookView(DetailView):
         try:
             book_obj=models.Book.objects.get(pk=book_pk)
         except:
-            Http404()
+            raise Http404()
         name=None
         email=None
         if not self.request.user.is_authenticated:
@@ -115,6 +138,31 @@ class SingleBookView(DetailView):
             messages.success(request,'Your review was successfully recorded..')
         
         return redirect(reverse('product_app:single_book',kwargs={'pk':book_pk,'bookname':book_obj.get_book_name_for_url()}))    
+
+class SearchListView(ListView):
+    template_name='search.html'
+    context_object_name='booklist'
+    model=models.Book
+    paginate_by=2
+
+    def get_queryset(self):
+        search=None
+        if 'search' in self.request.GET:
+            search=self.request.GET['search']
+        else:
+            raise Http404()
+        search=search.lower()
+        book_name_query=self.model.objects.filter(book_name__icontains=search)
+        book_category_query=self.model.objects.filter(book_category__category_title__icontains=search)
+        book_author_query=self.model.objects.filter(book_author__author_name__icontains=search)
+        return book_name_query.union(book_category_query.union(book_author_query))
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search"] =self.request.GET['search'] 
+        return context
+        
+        
 
 
 
