@@ -143,7 +143,7 @@ class SearchListView(ListView):
     template_name='search.html'
     context_object_name='booklist'
     model=models.Book
-    paginate_by=2
+    paginate_by=6
 
     def get_queryset(self):
         search=None
@@ -155,7 +155,7 @@ class SearchListView(ListView):
         book_name_query=self.model.objects.filter(book_name__icontains=search)
         book_category_query=self.model.objects.filter(book_category__category_title__icontains=search)
         book_author_query=self.model.objects.filter(book_author__author_name__icontains=search)
-        return book_name_query.union(book_category_query.union(book_author_query))
+        return book_name_query.union(book_category_query.union(book_author_query)).order_by('-pk')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
